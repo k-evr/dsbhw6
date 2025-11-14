@@ -1,0 +1,38 @@
+1.1) For the initial dataset of 100 speakers, I propose a speaker-independent split: 70 speakers for training, 15 for validation, and
+15 for testing. This ensures the model is evaluated on completely unseen speakers, properly testing its generalization to new people.
+1.2) When Kilian's additional 10,000 recordings arrive, his data should be split into three parts: 7,000 for Kilian-train, 1,500 for Kilian-validation,
+and 1,500 for Kilian-test. The training strategy should be two-stage: first, train a base model on the original 70 speakers. Then,
+carefully fine-tune this model on the Kilian-train set. During fine-tuning, performance must be monitored on both the original validation
+set (to preserve generalization) and the Kilian-validation set (to optimize for Kilian). The final model is then evaluated on two
+separate, unseen test sets: the original 15 held-out speakers (testing generalization) and the Kilian-test set (testing speaker-specific
+performance). This strategy balances the dual objectives of personalization for Kilian and maintaining broad speaker independence.
+
+2.1) For the given dataset, the 1-NN decision boundary is defined by the Voronoi diagram, which partitions the plane based on the nearest
+neighbor to any point. Visually classifying new points: (2,1) is nearest to (3,1), making it Negative; (2,3) is equidistant to (1,4)
+and (3,2), resulting in a tie; and (4,4) is nearest to (5,4), making it Positive.
+2.2) Before scaling, the point (500,1) is closest to (500,4), so it is classified as Positive. After min-max scaling each feature to the
+[0,1] range, the nearest neighbor becomes (300,1), causing the classification to change to Negative. This demonstrates how feature scaling
+can significantly alter the nearest neighbor and the resulting prediction.
+2.3) To handle missing features in a test point for K-NN, the most straightforward method is to calculate the distance using only the available
+features, ignoring the missing ones entirely. Alternatively, the missing values can be imputed using the mean or median of that feature from
+the training set before performing the distance calculation.
+2.4) K-NN can still perform well on high-dimensional data like images because image pixels are highly correlated, meaning the data effectively
+resides on a much lower-dimensional manifold. Furthermore, if the dataset is large enough and the classes are well-separated in this space,
+a simple distance metric can often successfully capture the underlying similarities between images.
+
+3.1) Evaluating h(x) = sign(w * x) on both the training set D_TR and test set D_TE will show the model's performance on each, allowing you to
+directly compare the training and test error. If the test error is higher, it indicates the model may be overfitting to the training data. However,
+for the Perceptron, this specific outcome is expected if the data isn't perfectly separable, as the algorithm only minimizes training error without
+any regularization to ensure generalization.
+3.2) There is no need to explicitly compute the training error for the Perceptron algorithm because the core update rule is designed around correcting
+mistakes—a weight update only occurs when a training example is misclassified. Therefore, the algorithm's convergence (in the separable case) is
+inherently tied to reducing the number of training mistakes to zero, making an explicit, separate calculation of training error unnecessary for
+the learning process itself.
+
+4) (-3,-10,3,-3,-1)
+
+5) To visualize Perceptron convergence, first generate a small 2D dataset with linearly separable positive and negative classes. Initialize the
+Perceptron with zero weights, then iteratively update the weights whenever a point is misclassified using the rule w = w + y * x. After each update,
+plot the data points and the current decision boundary, which is the line defined by w * x = 0. The sequence of plots will show the boundary rotating
+and shifting as it moves toward misclassified points, gradually reducing errors until it converges to a stable separator that perfectly divides the two
+classes, demonstrating the algorithm's step-by-step progress toward a solution.
